@@ -1,0 +1,65 @@
+@startuml dfgy
+left to right direction
+
+
+actor Admin
+actor Teacher
+actor Student
+
+rectangle "Système de débriefing pédagogique" {
+
+  (Se connecter)
+
+  ' --- Admin ---
+  Admin -- (Créer des comptes)
+  Admin -- (Créer des classes)
+  Admin -- (Affecter apprenants aux classes)
+  Admin -- (Affecter formateurs aux classes)
+  Admin -- (Assigner des sprints à une classe)
+  Admin -- (Gérer les compétences)
+  Admin -- (Consulter les statistiques globales)
+
+  (Créer compte apprenant) ..> (Créer des comptes) : <<extend>>
+  (Créer compte formateur) ..> (Créer des comptes) : <<extend>>
+
+  ' --- Teacher ---
+  Teacher -- (Créer un brief)
+  Teacher -- (Associer compétences à un brief)
+  Teacher -- (Réaliser un débriefing pédagogique)
+  Teacher -- (Consulter l’historique des débriefings)
+  Teacher -- (Consulter progression d’un apprenant)
+  Teacher -- (Consulter progression d’une classe)
+
+  (Réaliser un débriefing pédagogique) --> (Évaluer les compétences) : <<include>>
+  (Réaliser un débriefing pédagogique) --> (Attribuer un niveau de maîtrise) : <<include>>
+  (Ajouter un commentaire pédagogique) ..> (Réaliser un débriefing pédagogique) : <<extend>>
+
+  ' --- Student ---
+  Student -- (Consulter ses briefs)
+  Student -- (livrer le brief)
+  Student -- (Consulter ses évaluations)
+  Student -- (Suivre sa progression)
+
+  ' --- Login inclus partout ---
+  (Créer des comptes) --> (Se connecter) : <<include>>
+  (Créer des classes) --> (Se connecter) : <<include>>
+  (Affecter apprenants aux classes) --> (Se connecter) : <<include>>
+  (Affecter formateurs aux classes) --> (Se connecter) : <<include>>
+  (Assigner des sprints à une classe) --> (Se connecter) : <<include>>
+  (Gérer les compétences) --> (Se connecter) : <<include>>
+  (Consulter les statistiques globales) --> (Se connecter) : <<include>>
+
+  (Créer un brief) --> (Se connecter) : <<include>>
+  (Associer compétences à un brief) --> (Se connecter) : <<include>>
+  (Réaliser un débriefing pédagogique) --> (Se connecter) : <<include>>
+  (Consulter l’historique des débriefings) --> (Se connecter) : <<include>>
+  (Consulter progression d’un apprenant) --> (Se connecter) : <<include>>
+  (Consulter progression d’une classe) --> (Se connecter) : <<include>>
+
+  (Consulter ses briefs) --> (Se connecter) : <<include>>
+  (livrer le brief) --> (Se connecter) : <<include>>
+  (Consulter ses évaluations) --> (Se connecter) : <<include>>
+  (Suivre sa progression) --> (Se connecter) : <<include>>
+}
+
+@enduml
