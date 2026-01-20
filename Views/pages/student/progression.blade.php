@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Progression - Debrief.me</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="bg-[#0f172a] text-slate-100 min-h-screen">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 glass border-r border-white/10 p-6 flex flex-col fixed h-full">
+            <div class="flex items-center gap-3 text-2xl font-extrabold mb-10">
+                <i data-lucide="graduation-cap" class="text-indigo-500"></i>
+                <span>Debrief.me</span>
+            </div>
+            
+            <nav class="space-y-2 flex-1">
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
+                    <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
+                    <i data-lucide="file-text"></i> <span>Mes Briefs</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="award"></i> <span>Mon Parcours</span>
+                </a>
+            </nav>
+
+            <div class="pt-6 border-t border-white/10">
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                    <i data-lucide="log-out"></i> <span>Déconnexion</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-8">
+            <header class="flex justify-between items-center mb-10">
+                <div>
+                    <h1 class="text-3xl font-extrabold">Mon Parcours Pédagogique</h1>
+                    <p class="text-slate-400 mt-1">Suivez votre progression et vos validations</p>
+                </div>
+                <div class="glass px-4 py-2 rounded-2xl flex items-center gap-3">
+                    <div class="text-right">
+                        <p class="text-sm font-bold">{{ $user_name ?? 'Saad El Haidi' }}</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Student</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-slate-900">S</div>
+                </div>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div class="glass p-6 rounded-3xl border-l-4 border-indigo-500">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Briefs Validés</p>
+                    <h2 class="text-4xl font-extrabold text-white">12</h2>
+                </div>
+                <div class="glass p-6 rounded-3xl border-l-4 border-emerald-500">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Compétences</p>
+                    <h2 class="text-4xl font-extrabold text-white">8/14</h2>
+                </div>
+                <div class="glass p-6 rounded-3xl border-l-4 border-rose-500">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Taux Réussite</p>
+                    <h2 class="text-4xl font-extrabold text-white">85%</h2>
+                </div>
+                <div class="glass p-6 rounded-3xl border-l-4 border-indigo-300">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Niveau Global</p>
+                    <h2 class="text-4xl font-extrabold text-white">2.4</h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Skill Map -->
+                <div class="lg:col-span-2 glass p-8 rounded-3xl">
+                    <h3 class="text-xl font-bold mb-8">Maillage des Compétences</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        @foreach($skills as $id => $title)
+                        <div class="bg-slate-900/50 border border-white/5 p-6 rounded-2xl hover:border-indigo-500/30 transition-all group">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-sm font-bold group-hover:text-indigo-400 transition-colors">{{ $title }}</h4>
+                                <span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-[10px] font-bold uppercase">Intermédiaire</span>
+                            </div>
+                            
+                            <!-- Progress Steps -->
+                            <div class="flex gap-1 mb-3">
+                                <div class="h-2 flex-1 rounded-full bg-emerald-500/50"></div>
+                                <div class="h-2 flex-1 rounded-full bg-indigo-500/50"></div>
+                                <div class="h-2 flex-1 rounded-full bg-slate-700"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-[10px] text-slate-500 font-bold uppercase tracking-tighter">
+                                <span>L1</span>
+                                <span>L2</span>
+                                <span>L3</span>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="glass p-8 rounded-3xl lg:col-span-1">
+                    <h3 class="text-xl font-bold mb-6">Derniers Retours</h3>
+                    <div class="space-y-6">
+                        @for($i=0; $i<3; $i++)
+                        <div class="relative pl-6 border-l-2 border-indigo-500/30">
+                            <div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-indigo-500 shadow-lg shadow-indigo-500/50"></div>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">12 Janvier 2024</span>
+                            <h4 class="text-sm font-bold text-white mt-1">Brief PixelQuest</h4>
+                            <p class="text-xs text-slate-400 mt-2 line-clamp-2">"Excellent travail sur la structure HTML, la sémantique est respectée. Attention au CSS..."</p>
+                            <div class="flex gap-2 mt-3">
+                                <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-indigo-400 border border-indigo-500/10">C1: N2</span>
+                                <span class="text-[9px] bg-slate-800 px-2 py-0.5 rounded text-emerald-400 border border-emerald-500/10">C2: N1</span>
+                            </div>
+                        </div>
+                        @endfor
+                    </div>
+                    <button class="w-full mt-8 py-3 rounded-xl border border-white/10 text-xs font-bold hover:bg-white/5 transition-all">VOIR TOUT L'HISTORIQUE</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
