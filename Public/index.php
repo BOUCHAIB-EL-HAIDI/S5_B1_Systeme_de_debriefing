@@ -17,6 +17,8 @@ $router->get('/admin/users', "AdminController@users");
 $router->get('/admin/classes', "AdminController@classes");
 $router->get('/admin/competences', "AdminController@competences");
 
+$router->post('/admin/classes/create' , "AddClassController@addClass");
+
 // Teacher Routes
 $router->get('/teacher/dashboard', "TeacherController@dashboard");
 $router->get('/teacher/debriefing', "TeacherController@debriefing");

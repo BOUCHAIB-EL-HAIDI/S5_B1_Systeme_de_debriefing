@@ -12,8 +12,7 @@ class AuthController extends Controller
 
     public function login()
     {
-        // Logic for authentication would go here
-        // For now, redirect to a dashboard based on role or just admin for demo
+        
         header('Location: /admin/dashboard');
     }
 
