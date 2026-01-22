@@ -51,7 +51,7 @@
  <h1 class="text-3xl font-extrabold">Gestion des Classes</h1>
  <p class="text-slate-400 mt-1">Gérez les promotions et affectez les formateurs</p>
  </div>
- <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
+ <button id="openModal" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
  <i data-lucide="plus-circle" class="w-5 h-5"></i>
  Créer une Classe
  </button>
@@ -100,8 +100,91 @@
  </main>
  </div>
 
+ <!-- Create Class Modal -->
+ <div id="classModal" class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+ <div class="glass w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
+ <div class="flex justify-between items-center mb-8">
+ <div>
+ <h2 class="text-2xl font-extrabold">Nouvelle Classe</h2>
+ <p class="text-slate-400 text-sm">Configurez la nouvelle promotion</p>
+ </div>
+ <button id="closeModal" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all">
+ <i data-lucide="x" class="w-5 h-5"></i>
+ </button>
+ </div>
+
+ <form action="/admin/classes/create" method="POST" class="space-y-5">
+ <div>
+ <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Nom de la classe</label>
+ <input type="text" name="name" placeholder="ex: WEB-2024-C" required  value ="<?= htmlspecialchars($_POST['name'] ?? '')?>"
+ class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-600">
+
+ </div>
+ <?php if(!empty($errors['classname'])): ?>
+
+ <p class="text-red-500 text-600 pl-4"><?php echo \htmlentities($errors['classname']??'', ENT_QUOTES, 'UTF-8', false); ?> </p>
+
+ <?php endif; ?>
+
+ <div>
+ <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Année</label>
+ <input type="number" name="year" placeholder="2024" required value ="<?= htmlspecialchars($_POST['year'] ?? '')?>"
+ class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-600">     
+ 
+ </div>
+ <?php if(!empty($errors['classyear'])): ?>
+
+ <p class="text-red-500 text-600 pl-2"><?php echo \htmlentities($errors['classyear']??'', ENT_QUOTES, 'UTF-8', false); ?> </p>
+
+ <?php endif; ?>
+
+ <div class="pt-4">
+ <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
+ <i data-lucide="check-circle" class="w-5 h-5"></i>
+ Créer la classe
+ </button>
+ </div>
+ </form>
+ </div>
+ </div>
+
  <script>
  lucide.createIcons();
+
+ const modal = document.getElementById('classModal');
+ const modalContent = document.getElementById('modalContent');
+ const openBtn = document.getElementById('openModal');
+ const closeBtn = document.getElementById('closeModal');
+
+ const toggleModal = (show) => {
+ if (show) {
+ modal.classList.remove('hidden');
+ setTimeout(() => {
+ modal.classList.remove('opacity-0');
+ modalContent.classList.remove('scale-95');
+ }, 10);
+ } else {
+ modal.classList.add('opacity-0');
+ modalContent.classList.add('scale-95');
+ setTimeout(() => {
+ modal.classList.add('hidden');
+ }, 300);
+ }
+ };
+
+ openBtn.addEventListener('click', () => toggleModal(true));
+ closeBtn.addEventListener('click', () => toggleModal(false));
+ modal.addEventListener('click', (e) => {
+ if (e.target === modal) toggleModal(false);
+ });
  </script>
+ <?php if(!empty($openModal)): ?>
+ <script>
+ document.addEventListener('DOMContentLoaded', () => {
+ toggleModal(true);
+ });
+ </script>
+ <?php endif; ?>
+
 </body>
 </html>
