@@ -32,5 +32,9 @@ $router->get('/student/progression', "StudentController@progression");
 
 // Home fallback
 $router->get('/', "AuthController@showLogin");
+$router->get('/login', "AuthController@showLogin");
+
+$router->post('/login', "AuthController@login");
+
 
 $router->dispatch();
