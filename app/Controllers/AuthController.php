@@ -13,15 +13,12 @@ class AuthController extends Controller
 
     public function login()
     { 
-
-        
-         if(session_status() === PHP_SESSION_NONE){
-
-         session_start();
-         }
+    
+    
+   
 
  try {   
-       $email = $_POST['email'] ?? '';
+       $email = trim($_POST['email'] ?? '');
        $password = $_POST['password'] ?? '';
 
         $AuthService = new AuthService();
@@ -40,8 +37,11 @@ class AuthController extends Controller
         header('Location: /' . strtolower($user->getRole()) . '/dashboard' );
         exit;
 
-     }catch(Exception $e ){
+     }catch(\Exception $e ){
         $_SESSION['error'] = $e->getMessage();
+        $_SESSION['old'] = [
+        'email' => $email
+         ]; 
         header('Location: /login');
         exit;
      }

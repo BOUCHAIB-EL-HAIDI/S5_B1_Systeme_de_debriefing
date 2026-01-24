@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-USE Models\User;
+USE App\Models\User;
 
 
 class Student extends User{
