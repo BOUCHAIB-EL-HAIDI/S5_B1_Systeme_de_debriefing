@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-USE Models\User;
+USE App\Models\User;
 
 
 class Teacher extends User{

@@ -28,11 +28,18 @@
             </div>
 
             <form action="/login" method="POST" class="space-y-6 relative z-10">
+                @if(isset($_SESSION['error']))
+  
+                <p class="text-red-700 text-center ">{{ $_SESSION['error']   }} </p>
+                @php unset($_SESSION['error']) ; @endphp
+                @endif
+
+
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Email</label>
                     <div class="relative">
                         <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-                        <input type="email" name="email" required class="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all" placeholder="nom@exemple.com">
+                        <input type="email" value="{{   $_SESSION['old']['email'] ?? ''   }}" name="email" required class="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-4 pl-12 pr-4 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all" placeholder="nom@exemple.com">
                     </div>
                 </div>
 
