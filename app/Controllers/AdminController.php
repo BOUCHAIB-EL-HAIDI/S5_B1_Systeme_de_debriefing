@@ -2,9 +2,17 @@
 namespace App\Controllers;
 
 use Core\Controller;
-
+use Core\Middleware;
 class AdminController extends Controller
+
 {
+
+      public function __construct()
+     {
+         parent::__construct();
+         Middleware::auth();
+         Middleware::role('ADMIN');
+     }
     public function dashboard()
     {
         $this->render('pages.admin.dashboard', [

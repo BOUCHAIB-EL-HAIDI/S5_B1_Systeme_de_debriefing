@@ -2,9 +2,20 @@
 namespace App\Controllers;
 
 use Core\Controller;
+use Core\Middleware;
 
 class TeacherController extends Controller
 {
+
+
+     public function __construct()
+    {
+        parent::__construct();
+        Middleware::auth();
+        Middleware::role('TEACHER');
+    }
+
+
     public function dashboard()
     {
         $this->render('pages.teacher.dashboard', [
