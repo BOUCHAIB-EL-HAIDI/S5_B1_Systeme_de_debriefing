@@ -3,9 +3,16 @@ namespace App\Controllers;
 
 use Core\Controller;
 USE App\Services\AuthService;
-
+use Core\Middleware;
 class AuthController extends Controller
 {
+
+       public function __construct()
+    {
+        parent::__construct();
+        Middleware::guest(); 
+    }
+
     public function showLogin()
     {
         $this->render('pages.auth.login');
