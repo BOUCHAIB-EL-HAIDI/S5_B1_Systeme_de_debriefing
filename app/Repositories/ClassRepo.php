@@ -27,4 +27,18 @@ $stmt->execute([
 
 }
 
+
+public function getAllClasses(){
+
+ 
+
+
+
+
+
+}
+
+
+
+
 }

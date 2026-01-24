@@ -4,7 +4,7 @@ namespace App\Models;
 USE Models\User;
 
 
-class Teacher extends User{
+class Student extends User{
 
       
      protected string $role;

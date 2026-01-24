@@ -5,6 +5,14 @@ use App\Repositories\ClassRepo;
 
 class ClassService {
 
+private ClassRepo  $ClassRepo ;
+
+public function __construct(){
+
+$this->ClassRepo = new ClassRepo();
+
+}
+
 public function validate(string $ClassName ,  string $ClassYear){
 
 $errors = [];
@@ -32,8 +40,8 @@ return [
 }
   
  //if data is valid 
- $ClassRepo = new ClassRepo();
- $ClassRepo->addClass($ClassName , $ClassYear);
+
+ $this->ClassRepo->addClass($ClassName , $ClassYear);
 
  return [
     'success' => true

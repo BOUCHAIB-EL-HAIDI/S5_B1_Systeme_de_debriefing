@@ -32,7 +32,7 @@ class AdminController extends Controller
 
     public function classes()
     {
-        // View for class management
+        
         $this->render('pages.admin.classes');
     }
 

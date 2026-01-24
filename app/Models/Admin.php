@@ -2,7 +2,7 @@
 
 namespace App\Models ; 
 
-USE Models\User;
+USE App\Models\User;
 class Admin extends User {
 
 
@@ -10,9 +10,9 @@ class Admin extends User {
         
      protected string $role;
 
-     public function __construct($id , $first_name , $last_name , $email , $password ){
+     public function __construct($id , $first_name , $last_name , $email  ){
 
-         parent::__construct($id , $first_name , $last_name , $email , $password , 'ADMIN');
+         parent::__construct($id , $first_name , $last_name , $email , 'ADMIN');
 
     }
 
