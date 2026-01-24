@@ -10,18 +10,19 @@ class AuthController extends Controller
        public function __construct()
     {
         parent::__construct();
-        Middleware::guest(); 
+       
     }
 
     public function showLogin()
     {
+         Middleware::guest(); 
         $this->render('pages.auth.login');
     }
 
     public function login()
     { 
     
-    
+      Middleware::guest(); 
    
 
  try {   
