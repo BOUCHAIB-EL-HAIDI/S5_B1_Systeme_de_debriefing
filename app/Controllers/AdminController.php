@@ -28,13 +28,11 @@ class AdminController extends Controller
     public function dashboard()
     {
         $stats = $this->adminService->getDashboardStats();
+        $actions = $this->adminService->getRecentActions();
+        
         $this->render('pages.admin.dashboard', [
             'stats' => $stats,
-            'actions' => [
-                ['icon' => 'user-plus', 'color' => 'indigo', 'text' => 'Gestion des utilisateurs opérationnelle'],
-                ['icon' => 'target', 'color' => 'emerald', 'text' => 'Référentiel de compétences à jour'],
-                ['icon' => 'layers', 'color' => 'rose', 'text' => 'Planification des sprints active']
-            ]
+            'actions' => $actions
         ]);
     }
 

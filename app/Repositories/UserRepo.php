@@ -67,7 +67,7 @@ class UserRepo {
         $stats['total_students'] = $this->pdo->query("SELECT COUNT(*) FROM users WHERE role = 'STUDENT'")->fetchColumn();
         $stats['total_teachers'] = $this->pdo->query("SELECT COUNT(*) FROM users WHERE role = 'TEACHER'")->fetchColumn();
         $stats['total_classes'] = $this->pdo->query("SELECT COUNT(*) FROM classe")->fetchColumn();
-        $stats['total_sprints'] = $this->pdo->query("SELECT COUNT(*) FROM sprint")->fetchColumn();
+        $stats['total_sprints'] = $this->pdo->query("SELECT COUNT(DISTINCT name) FROM sprint")->fetchColumn();
         return $stats;
     }
 
@@ -100,5 +100,41 @@ class UserRepo {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($classIds);
         return $stmt->fetchAll();
+    }
+
+    public function getRecentActions(int $limit = 5): array {
+        $sql = "SELECT 
+                    CASE 
+                        WHEN role = 'STUDENT' THEN 'user-plus'
+                        WHEN role = 'TEACHER' THEN 'user-check'
+                        ELSE 'shield'
+                    END as icon,
+                    CASE 
+                        WHEN role = 'STUDENT' THEN 'indigo'
+                        WHEN role = 'TEACHER' THEN 'emerald'
+                        ELSE 'rose'
+                    END as color,
+                    'Nouvel utilisateur créé : ' || first_name || ' ' || last_name || ' (' || role || ')' as text,
+                    created_at
+                FROM users
+                WHERE created_at IS NOT NULL
+                ORDER BY created_at DESC
+                LIMIT :limit";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        $actions = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        // If no users with created_at, return default messages
+        if (empty($actions)) {
+            return [
+                ['icon' => 'database', 'color' => 'indigo', 'text' => 'Système initialisé'],
+                ['icon' => 'shield-check', 'color' => 'emerald', 'text' => 'Sécurité activée'],
+                ['icon' => 'server', 'color' => 'slate', 'text' => 'Base de données opérationnelle']
+            ];
+        }
+        
+        return $actions;
     }
 }

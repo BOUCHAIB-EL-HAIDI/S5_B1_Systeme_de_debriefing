@@ -92,4 +92,8 @@ class AdminService {
     public function getUsersList(): array {
         return $this->userRepo->getAllUsers();
     }
+
+    public function getRecentActions(int $limit = 5): array {
+        return $this->userRepo->getRecentActions($limit);
+    }
 }
