@@ -18,7 +18,7 @@ $this->pdo = Database::getInstance()->getConnection();
 
 public function findByEmail($email){
 
-$stmt = $this->pdo->prepare('SELECT * FROM users where email = :email Limit 1');
+$stmt = $this->pdo->prepare('SELECT * FROM users where email = :email LIMIT 1');
 
 $stmt->execute([
    'email' =>$email

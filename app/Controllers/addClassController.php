@@ -31,7 +31,7 @@ class AddClassController extends Controller
 
 
       $_SESSION['success'] = 'Classe ajoutée avec succès';
-      header('Location: /admin/classes');
+      header('Location: ' . BASE_URL . '/admin/classes');
       exit;
 
 

@@ -1,12 +1,10 @@
 <?php
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Core\Router;
+
+define('BASE_URL', rtrim(str_replace('/Public', '', dirname($_SERVER['SCRIPT_NAME'])), '/\\'));
 
 $router = new Router();
 
@@ -20,9 +18,13 @@ $router->get('/admin/dashboard', "AdminController@dashboard");
 $router->get('/admin/users', "AdminController@users");
 $router->get('/admin/classes', "AdminController@classes");
 $router->get('/admin/competences', "AdminController@competences");
+$router->get('/admin/sprints', "AdminController@sprints");
+$router->get('/admin/users/createuser', "AdminController@createUser");
 
-$router->post('/admin/classes/create' , "AddClassController@addClass");
-
+$router->post('/admin/users/store', "AdminController@storeUser");
+$router->post('/admin/competences/store', "AdminController@storeCompetence");
+$router->post('/admin/sprints/store', "AdminController@storeSprint");
+$router->post('/admin/classes/create', "AddClassController@addClass");
 // Teacher Routes
 $router->get('/teacher/dashboard', "TeacherController@dashboard");
 $router->get('/teacher/debriefing', "TeacherController@debriefing");

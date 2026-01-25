@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Référentiel Compétences - Debrief.me</title>
+    <title>Gestion des Sprints - Debrief.me</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -32,10 +32,10 @@
                 <a href="{{ $baseUrl }}/admin/classes" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="book-open"></i> <span>Classes</span>
                 </a>
-                <a href="{{ $baseUrl }}/admin/competences" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="target"></i> <span>Compétences</span>
                 </a>
-                <a href="{{ $baseUrl }}/admin/sprints" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/sprints" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="layers"></i> <span>Sprints</span>
                 </a>
             </nav>
@@ -51,17 +51,18 @@
         <main class="flex-1 ml-64 p-8">
             <header class="flex justify-between items-center mb-10">
                 <div>
-                    <h1 class="text-3xl font-extrabold">Référentiel de Compétences</h1>
-                    <p class="text-slate-400 mt-1">Définissez les compétences et les critères d'évaluation</p>
+                    <h1 class="text-3xl font-extrabold">Gestion des Sprints</h1>
+                    <p class="text-slate-400 mt-1">Créez et assignez des sprints aux classes</p>
                 </div>
+                
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Add Competence Form -->
+                <!-- Add Sprint Form -->
                 <div class="lg:col-span-1">
                     <div class="glass p-8 rounded-[2.5rem] sticky top-8">
-                        <h3 class="text-xl font-bold mb-6">Nouvelle Compétence</h3>
-                        
+                        <h3 class="text-xl font-bold mb-6">Nouveau Sprint</h3>
+
                         @if(!empty($_SESSION['success']))
                             <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-sm flex items-center gap-2">
                                 <i data-lucide="check-circle" class="w-4 h-4"></i>
@@ -70,10 +71,10 @@
                             </div>
                         @endif
 
-                        @if(!empty($_SESSION['errors']['code']))
+                        @if(!empty($_SESSION['errors']['system']))
                             <div class="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl text-sm flex items-center gap-2">
                                 <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                                {{ $_SESSION['errors']['code'] }}
+                                {{ $_SESSION['errors']['system'] }}
                                 @php unset($_SESSION['errors']) @endphp
                             </div>
                         @endif
@@ -86,49 +87,72 @@
                             </div>
                         @endif
 
-                        <form action="{{ $baseUrl }}/admin/competences/store" method="POST" class="space-y-4">
+                        <form action="{{ $baseUrl }}/admin/sprints/store" method="POST" class="space-y-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Code (Format: C1, C2...)</label>
-                                <input type="text" name="code" required placeholder="C1" 
+                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Nom du Sprint</label>
+                                <input type="text" name="name" required placeholder="ex: Sprint 1 - PHP" 
                                        class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-600">
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Libellé</label>
-                                <textarea name="label" required placeholder="Description de la compétence..." rows="3"
-                                          class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-600"></textarea>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Durée (jours)</label>
+                                    <input type="number" name="duration" required placeholder="7" 
+                                           class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Ordre</label>
+                                    <input type="number" name="order" required placeholder="1" 
+                                           class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                                </div>
+                            </div>
+                            <div class="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-2xl">
+                                <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Information</p>
+                                <p class="text-xs text-slate-300">Ce sprint sera automatiquement assigné à <strong>toutes les classes</strong> existantes.</p>
                             </div>
                             <button type="submit" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2">
                                 <i data-lucide="plus" class="w-5 h-5"></i>
-                                Enregistrer
+                                Assigner Sprint
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <!-- Competences List -->
+                <!-- Sprints List -->
                 <div class="lg:col-span-2 space-y-4">
                     <div class="glass p-8 rounded-[2.5rem]">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-bold">Liste des Compétences</h3>
-                            <span class="text-xs text-slate-500 font-bold uppercase tracking-widest">{{ count($competences) }} Total</span>
+                            <h3 class="text-xl font-bold">Sprints Assignés</h3>
+                            <span class="text-xs text-slate-500 font-bold uppercase tracking-widest">{{ count($sprints) }} Total</span>
                         </div>
 
+                        @if(!empty($_SESSION['errors']['order']))
+                            <div class="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl text-sm flex items-center gap-2">
+                                <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                                {{ $_SESSION['errors']['order'] }}
+                                @php unset($_SESSION['errors']) @endphp
+                            </div>
+                        @endif
+
                         <div class="space-y-3">
-                            @foreach ($competences as $comp)
+                            @foreach ($sprints as $sprint)
                             <div class="p-4 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-between group hover:border-indigo-500/30 transition-all">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-sm">{{ $comp['code'] }}</div>
+                                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold text-sm">S{{ $sprint['order'] }}</div>
                                     <div>
-                                        <h4 class="text-sm font-bold text-white">{{ $comp['label'] }}</h4>
-                                        <p class="text-[10px] text-slate-500">Ajoutée le {{ date('d/m/Y', strtotime($comp['created_at'])) }}</p>
+                                        <h4 class="text-sm font-bold text-white">{{ $sprint['name'] }}</h4>
+                                        <div class="flex gap-3 mt-1">
+                                            <p class="text-[10px] text-slate-500 flex items-center gap-1">
+                                                <i data-lucide="calendar" class="w-3 h-3"></i> {{ $sprint['duration'] }} jours
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             @endforeach
                             
-                            @if(empty($competences))
+                            @if(empty($sprints))
                                 <div class="text-center py-10">
-                                    <p class="text-slate-500 italic">Aucune compétence enregistrée pour le moment.</p>
+                                    <p class="text-slate-500 italic">Aucun sprint planifié pour le moment.</p>
                                 </div>
                             @endif
                         </div>

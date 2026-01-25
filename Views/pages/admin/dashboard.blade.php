@@ -23,22 +23,25 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/admin/dashboard" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/admin/users" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
+                <a href="{{ $baseUrl }}/admin/users" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
                     <i data-lucide="users"></i> <span>Utilisateurs</span>
                 </a>
-                <a href="/admin/classes" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
+                <a href="{{ $baseUrl }}/admin/classes" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
                     <i data-lucide="book-open"></i> <span>Classes</span>
                 </a>
-                <a href="/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
+                <a href="{{ $baseUrl }}/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
                     <i data-lucide="target"></i> <span>Compétences</span>
+                </a>
+                <a href="{{ $baseUrl }}/admin/sprints" class="flex items-center gap-3 p-3 rounded-xl hover:bg-indigo-500 transition-all text-slate-400 hover:text-white">
+                    <i data-lucide="layers"></i> <span>Sprints</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -53,10 +56,12 @@
                 </div>
                 <div class="glass px-4 py-2 rounded-2xl flex items-center gap-3">
                     <div class="text-right">
-                        <p class="text-sm font-bold">Admin Alpha</p>
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">Super Admin</p>
+                        <p class="text-sm font-bold">{{ $auth['first_name'] }} {{ $auth['last_name'] }}</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-wider">{{ $auth['role'] }}</p>
                     </div>
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold">A</div>
+                    <div class="w-10 h-10 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
+                        {{ substr($auth['first_name'], 0, 1) }}
+                    </div>
                 </div>
             </header>
 
@@ -65,34 +70,30 @@
                 <div class="glass p-6 rounded-3xl group hover:border-indigo-500/50 transition-all">
                     <div class="flex justify-between items-start mb-4">
                         <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400"><i data-lucide="users"></i></div>
-                        <span class="text-xs text-emerald-400 font-bold">+12%</span>
                     </div>
                     <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Total Apprenants</p>
-                    <h2 class="text-3xl font-extrabold text-white">124</h2>
+                    <h2 class="text-3xl font-extrabold text-white">{{ $stats['total_students'] }}</h2>
                 </div>
                 <div class="glass p-6 rounded-3xl group hover:border-emerald-500/50 transition-all">
                     <div class="flex justify-between items-start mb-4">
                         <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400"><i data-lucide="user-check"></i></div>
-                        <span class="text-xs text-slate-400 font-bold">Stable</span>
                     </div>
-                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Formateurs Active</p>
-                    <h2 class="text-3xl font-extrabold text-white">18</h2>
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Formateurs</p>
+                    <h2 class="text-3xl font-extrabold text-white">{{ $stats['total_teachers'] }}</h2>
                 </div>
                 <div class="glass p-6 rounded-3xl group hover:border-rose-500/50 transition-all">
                     <div class="flex justify-between items-start mb-4">
                         <div class="p-3 bg-rose-500/10 rounded-xl text-rose-400"><i data-lucide="book-open"></i></div>
-                        <span class="text-xs text-emerald-400 font-bold">+2</span>
                     </div>
-                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Classes Ouvertes</p>
-                    <h2 class="text-3xl font-extrabold text-white">14</h2>
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Classes</p>
+                    <h2 class="text-3xl font-extrabold text-white">{{ $stats['total_classes'] }}</h2>
                 </div>
                 <div class="glass p-6 rounded-3xl group hover:border-indigo-300/50 transition-all">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="p-3 bg-slate-500/10 rounded-xl text-slate-400"><i data-lucide="check-circle"></i></div>
-                        <span class="text-xs text-emerald-400 font-bold">+45</span>
+                        <div class="p-3 bg-slate-500/10 rounded-xl text-slate-400"><i data-lucide="layers"></i></div>
                     </div>
-                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Débriefings Totaux</p>
-                    <h2 class="text-3xl font-extrabold text-white">842</h2>
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-1">Sprints Totaux</p>
+                    <h2 class="text-3xl font-extrabold text-white">{{ $stats['total_sprints'] }}</h2>
                 </div>
             </div>
 
@@ -101,7 +102,6 @@
                 <div class="glass p-8 rounded-3xl">
                     <div class="flex justify-between items-center mb-8">
                         <h3 class="text-xl font-bold">Actions Récentes</h3>
-                        <button class="text-indigo-400 text-xs font-bold hover:underline">Voir log complet</button>
                     </div>
                     <div class="space-y-4">
                         @foreach($actions as $action)
@@ -110,22 +110,21 @@
                                 <i data-lucide="{{ $action['icon'] }}" class="w-4 h-4"></i>
                             </div>
                             <span class="text-xs text-slate-300">{{ $action['text'] }}</span>
-                            <span class="ml-auto text-[10px] text-slate-500">Il y a 2h</span>
                         </div>
                         @endforeach
                     </div>
                 </div>
 
-                <!-- Global Health Chart Placeholder -->
+                <!-- Health Insights -->
                 <div class="glass p-8 rounded-3xl flex flex-col items-center justify-center text-center">
                     <div class="w-48 h-48 rounded-full border-8 border-indigo-500/20 border-t-indigo-500 flex items-center justify-center mb-6 relative">
                         <div class="flex flex-col">
                             <span class="text-4xl font-black">74%</span>
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Validation</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">Promotion</span>
                         </div>
                     </div>
-                    <h3 class="text-lg font-bold mb-2">Santé Pédagogique Globale</h3>
-                    <p class="text-sm text-slate-400 max-w-xs">Moyenne de validation des compétences à travers toutes les classes actives.</p>
+                    <h3 class="text-lg font-bold mb-2">Engagement Global</h3>
+                    <p class="text-sm text-slate-400 max-w-xs">Taux de participation et achèvement des livrables sur la période actuelle.</p>
                 </div>
             </div>
         </main>

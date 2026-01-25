@@ -19,9 +19,19 @@ $errors = [];
 
 if(!preg_match('/^[A-Za-z0-9_#\- ]{3,}$/', $ClassName)){
 
+
 $errors['classname'] = 'invalid class name';
 
 }
+
+if($this->ClassRepo->findClassByName($ClassName)){
+
+$errors['classexist'] = 'class already exist';
+
+}
+
+
+
 if(!is_numeric($ClassYear)){
 $errors['classyear'] = 'invalid year';
 }
@@ -50,6 +60,20 @@ return [
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

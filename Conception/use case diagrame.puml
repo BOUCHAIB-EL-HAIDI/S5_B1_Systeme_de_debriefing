@@ -25,6 +25,7 @@ rectangle "Système de débriefing pédagogique" {
   ' --- Teacher ---
   Teacher -- (Créer un brief)
   Teacher -- (Associer compétences à un brief)
+  Teacher -- (Associer brief a une sprint)
   Teacher -- (Réaliser un débriefing pédagogique)
   Teacher -- (Consulter l’historique des débriefings)
   Teacher -- (Consulter progression d’un apprenant)
@@ -48,9 +49,10 @@ rectangle "Système de débriefing pédagogique" {
   (Assigner des sprints à une classe) --> (Se connecter) : <<include>>
   (Gérer les compétences) --> (Se connecter) : <<include>>
   (Consulter les statistiques globales) --> (Se connecter) : <<include>>
-
+  
   (Créer un brief) --> (Se connecter) : <<include>>
   (Associer compétences à un brief) --> (Se connecter) : <<include>>
+  (Associer brief a une sprint)--> (Se connecter) : <<include>>
   (Réaliser un débriefing pédagogique) --> (Se connecter) : <<include>>
   (Consulter l’historique des débriefings) --> (Se connecter) : <<include>>
   (Consulter progression d’un apprenant) --> (Se connecter) : <<include>>

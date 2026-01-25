@@ -25,7 +25,14 @@ public function __construct(){
 }
 
    protected function render($view , $data = []){
-
+    $data['baseUrl'] = defined('BASE_URL') ? BASE_URL : '';
+    $data['auth'] = [
+        'id' => $_SESSION['user_id'] ?? null,
+        'first_name' => $_SESSION['first_name'] ?? 'Guest',
+        'last_name' => $_SESSION['last_name'] ?? '',
+        'email' => $_SESSION['user_email'] ?? '',
+        'role' => $_SESSION['user_role'] ?? 'GUEST'
+    ];
     try {
        echo $this->blade->run($view , $data);
     }catch(\Exception $e){

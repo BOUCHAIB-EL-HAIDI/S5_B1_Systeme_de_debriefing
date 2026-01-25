@@ -23,22 +23,25 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="/admin/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/admin/users" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/users" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="users"></i> <span>Utilisateurs</span>
                 </a>
-                <a href="/admin/classes" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/admin/classes" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="book-open"></i> <span>Classes</span>
                 </a>
-                <a href="/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="target"></i> <span>Compétences</span>
+                </a>
+                <a href="{{ $baseUrl }}/admin/sprints" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                    <i data-lucide="layers"></i> <span>Sprints</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -55,11 +58,34 @@
                     <i data-lucide="plus-circle" class="w-5 h-5"></i>
                     Créer une Classe
                 </button>
+                    @if(!empty($_SESSION['success']))
+                    <div id="successAlert" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-3 rounded-xl text-sm flex items-center gap-2 animate-pulse">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        {{ $_SESSION['success'] }}
+                    </div>
+
+                    @php
+                     unset($_SESSION['success'])
+                    @endphp
+
+                    <script>
+                        setTimeout(() => {
+                            const alert = document.getElementById('successAlert');
+                            if (alert) {
+                                alert.style.transition = 'opacity 0.5s ease';
+                                alert.style.opacity = '0';
+                                setTimeout(() => alert.remove(), 500);
+                            }
+                        }, 3000);
+                    </script>
+                    @endif
+
+                
             </header>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Class Card -->
-                @foreach(['WEB-2024-A', 'WEB-2024-B', 'DATA-2024', 'CYBER-2024'] as $class)
+                @foreach($classes as $class)
                 <div class="glass p-6 rounded-[2rem] hover:border-indigo-500/50 transition-all group">
                     <div class="flex justify-between items-start mb-6">
                         <div class="w-12 h-12 bg-indigo-500 shadow-lg shadow-indigo-500/20 rounded-2xl flex items-center justify-center">
@@ -67,34 +93,37 @@
                         </div>
                         <div class="flex flex-col items-end">
                             <span class="text-[10px] text-slate-500 uppercase font-bold">Année</span>
-                            <span class="text-sm font-bold text-slate-300">2024</span>
+                            <span class="text-sm font-bold text-slate-300">{{ $class['year'] }}</span>
                         </div>
                     </div>
                     
-                    <h3 class="text-xl font-extrabold mb-1">{{ $class }}</h3>
-                    <p class="text-xs text-slate-500 mb-6">Développement Web & Mobile Fullstack</p>
+                    <h3 class="text-xl font-extrabold mb-1">{{ $class['name'] }}</h3>
+                    <p class="text-xs text-slate-500 mb-6">Promotion active</p>
 
                     <div class="space-y-3 mb-8">
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-400">Apprenants</span>
-                            <span class="font-bold">24</span>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-slate-400">Sprints Actifs</span>
-                            <span class="font-bold">2</span>
+                            <span class="font-bold {{ $class['student_count'] >= 26 ? 'text-rose-400' : 'text-emerald-400' }}">
+                                {{ $class['student_count'] }}/26
+                            </span>
                         </div>
                         <div class="flex items-center justify-between text-xs">
                             <span class="text-slate-400">Formateur principal</span>
-                            <span class="text-indigo-400 font-medium">Ahmed I.</span>
+                            <span class="text-indigo-400 font-medium">{{ $class['principal_teacher'] ?? 'Non assigné' }}</span>
                         </div>
                     </div>
 
                     <div class="flex gap-2">
                         <button class="flex-1 py-2 rounded-xl bg-white/5 text-xs font-bold hover:bg-indigo-500 transition-all">Gérer</button>
-                        <button class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-rose-500/20 text-rose-400 transition-all"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>
                 </div>
                 @endforeach
+
+                @if(empty($classes))
+                    <div class="col-span-full text-center py-20">
+                        <p class="text-slate-500 italic">Aucune classe créée pour le moment.</p>
+                    </div>
+                @endif
             </div>
         </main>
     </div>
@@ -112,22 +141,24 @@
                 </button>
             </div>
 
-            <form action="/admin/classes/create" method="POST" class="space-y-5">
+            <form action="{{ $baseUrl }}/admin/classes/create" method="POST" class="space-y-5">
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Nom de la classe</label>
-                    <input type="text" name="name" placeholder="ex: WEB-2024-C" required  value ="<?= htmlspecialchars($_POST['name'] ?? '')?>"
+                    <input type="text" name="name" placeholder="ex: WEB-2024-C" required  value ="{{ $old['name'] ?? '' }}"
                            class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-600">
 
                 </div>
-                     @if(!empty($errors['classname']))
+                   @if(!empty($errors['classname']))
+                       <p class="text-red-500 text-600 pl-4">{{ $errors['classname'] }}</p>
+                   @endif
 
-                    <p class="text-red-500 text-600 pl-4">{{ $errors['classname']}} </p>
-
-                     @endif
+                   @if(!empty($errors['classexist']))
+                       <p class="text-red-500 text-600 pl-4">{{ $errors['classexist'] }}</p>
+                   @endif
 
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Année</label>
-                    <input type="number" name="year" placeholder="2024" required value ="<?= htmlspecialchars($_POST['year'] ?? '')?>"
+                    <input type="number" name="year" placeholder="2024" required value ="{{ $old['year'] ?? '' }}"
                            class="w-full bg-slate-900/50 border border-white/10 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-indigo-500 outline-none transition-all placeholder:text-slate-600">     
                         
                 </div>

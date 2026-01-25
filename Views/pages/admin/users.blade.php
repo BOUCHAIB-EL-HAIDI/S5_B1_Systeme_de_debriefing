@@ -23,22 +23,25 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="/admin/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/admin/users" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/admin/users" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="users"></i> <span>Utilisateurs</span>
                 </a>
-                <a href="/admin/classes" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/classes" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="book-open"></i> <span>Classes</span>
                 </a>
-                <a href="/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/admin/competences" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="target"></i> <span>Compétences</span>
+                </a>
+                <a href="{{ $baseUrl }}/admin/sprints" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                    <i data-lucide="layers"></i> <span>Sprints</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -51,10 +54,10 @@
                     <h1 class="text-3xl font-extrabold">Gestion des Utilisateurs</h1>
                     <p class="text-slate-400 mt-1">Créez et gérez les comptes apprenants et formateurs</p>
                 </div>
-                <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
-                    <i data-lucide="user-plus" class="w-5 h-5"></i>
+                <a href="{{ $baseUrl }}/admin/users/createuser" class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20 text-sm">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
                     Nouvel Utilisateur
-                </button>
+                </a>
             </header>
 
             <!-- Filters -->
@@ -93,24 +96,26 @@
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
-                                        {{ substr($user['name'], 0, 1) }}
+                                        {{ substr($user['first_name'], 0, 1) }}
                                     </div>
                                     <div>
-                                        <p class="text-sm font-bold">{{ $user['name'] }}</p>
+                                        <p class="text-sm font-bold">{{ $user['first_name'] }} {{ $user['last_name'] }}</p>
                                         <p class="text-xs text-slate-500">{{ $user['email'] }}</p>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase {{ $user['role'] === 'TEACHER' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-emerald-500/20 text-emerald-400' }}">
+                                <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase {{ $user['role'] === 'TEACHER' ? 'bg-indigo-500/20 text-indigo-400' : ($user['role'] === 'ADMIN' ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400') }}">
                                     {{ $user['role'] }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-slate-400">{{ $user['class'] }}</td>
+                            <td class="px-6 py-4 text-sm text-slate-400">
+                                {{ $user['class_name'] ?? '—' }}
+                            </td>
                             <td class="px-6 py-4">
-                                <span class="flex items-center gap-2 text-xs {{ $user['status'] === 'Actif' ? 'text-emerald-400' : 'text-slate-500' }}">
-                                    <span class="w-2 h-2 rounded-full {{ $user['status'] === 'Actif' ? 'bg-emerald-500 shadow-lg shadow-emerald-500/50' : 'bg-slate-700' }}"></span>
-                                    {{ $user['status'] }}
+                                <span class="flex items-center gap-2 text-xs text-emerald-400">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></span>
+                                    Actif
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
