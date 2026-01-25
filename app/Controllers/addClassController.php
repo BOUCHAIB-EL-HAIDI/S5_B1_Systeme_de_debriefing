@@ -10,8 +10,16 @@ Use App\Services\ClassService;
 
 class AddClassController extends Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        \Core\Middleware::auth();
+        \Core\Middleware::role('ADMIN');
+    }
+
     public function addClass()
     {
+        
         
         $className = $_POST['name'] ?? '' ;
         $classYear = $_POST['year'] ?? '';
@@ -20,13 +28,15 @@ class AddClassController extends Controller
         $errors = $service->validate($className , $classYear);
          
         if(isset($errors['errors']) && !empty($errors)){
-        $this->render('pages.admin.classes' , [     
-        'errors' => $errors['errors'],
-        'openModal' => true
-        
-             ]); 
-
-         return;
+            $repo = new \App\Repositories\ClassRepo();
+            $classes = $repo->getAllClassesWithStats();
+            $this->render('pages.admin.classes' , [     
+                'errors' => $errors['errors'],
+                'openModal' => true,
+                'classes' => $classes,
+                'old' => $_POST
+            ]); 
+            return;
         }
 
 

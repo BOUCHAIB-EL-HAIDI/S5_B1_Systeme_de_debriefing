@@ -11,7 +11,7 @@ class Middleware
 
         if (!isset($_SESSION['user_id'])) {
             $_SESSION['error'] = 'Veuillez vous connecter.';
-            header('Location: /login');
+            header('Location: ' . BASE_URL . '/login');
             exit;
         }
     }
@@ -24,7 +24,7 @@ class Middleware
 
         if (isset($_SESSION['user_id'])) {
             $role = strtolower($_SESSION['user_role']);
-            header("Location: /{$role}/dashboard");
+            header('Location: ' . BASE_URL . "/{$role}/dashboard");
             exit;
         }
     }

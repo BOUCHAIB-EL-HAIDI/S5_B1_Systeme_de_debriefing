@@ -1,10 +1,6 @@
--- ============================================
--- DATABASE CREATION
--- ============================================
--- Note: If running this manually, ensure the database 'debriefing' exists or is created first.
--- DROP DATABASE IF EXISTS debriefing;
--- CREATE DATABASE debriefing;
--- \c debriefing;
+
+CREATE DATABASE debriefing;
+\c debriefing;
 
 -- ============================================
 -- ENUMS
@@ -60,7 +56,7 @@ CREATE TABLE IF NOT EXISTS users (
         OR
         (role = 'STUDENT' AND classe_id IS NOT NULL)
         OR
-        (role = 'TEACHER' AND classe_id IS NULL)
+        (role = 'TEACHER' AND classe_id IS NOT NULL)
     )
 );
 

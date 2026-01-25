@@ -22,8 +22,15 @@ class UserRepo {
             ':email' => $data['email'],
             ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
             ':role' => $data['role'],
-            ':classe_id' => $data['classe_id'] ?? null
+            ':classe_id' => !empty($data['classe_id']) ? $data['classe_id'] : null
         ]);
+    }
+
+    public function findByEmail(string $email) {
+        $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':email' => $email]);
+        return $stmt->fetch();
     }
 
     public function assignBackupClass(int $teacherId, int $classId): bool {
@@ -69,5 +76,29 @@ class UserRepo {
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':class_id' => $classId]);
         return (int) $stmt->fetchColumn() > 0;
+    }
+
+    public function getTeacherClasses(int $teacherId): array {
+        $sql = "SELECT c.*, 
+                CASE WHEN u.classe_id = c.id THEN true ELSE false END as is_primary
+                FROM classe c
+                JOIN teacher_classe tc ON c.id = tc.classe_id
+                JOIN users u ON u.id = tc.teacher_id
+                WHERE tc.teacher_id = :teacher_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':teacher_id' => $teacherId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getStudentsByClasses(array $classIds): array {
+        if (empty($classIds)) return [];
+        $placeholders = implode(',', array_fill(0, count($classIds), '?'));
+        $sql = "SELECT id, first_name, last_name, classe_id 
+                FROM users 
+                WHERE role = 'STUDENT' AND classe_id IN ($placeholders)
+                ORDER BY first_name ASC, last_name ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($classIds);
+        return $stmt->fetchAll();
     }
 }

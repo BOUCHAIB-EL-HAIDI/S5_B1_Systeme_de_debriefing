@@ -20,6 +20,11 @@ class AdminService {
             return ['success' => false, 'errors' => $errors];
         }
 
+        // Business Logic: Email Uniqueness
+        if ($this->userRepo->findByEmail($data['email'])) {
+            return ['success' => false, 'errors' => ['email' => 'Cet email est déjà utilisé.']];
+        }
+
         // Business Logic: Principal Teacher Limit (One per class)
         if ($data['role'] === 'TEACHER' && !empty($data['classe_id'])) {
             if ($this->userRepo->hasPrincipalTeacher($data['classe_id'])) {
@@ -42,17 +47,27 @@ class AdminService {
         }
 
         $userId = $this->userRepo->getLastInsertId();
+        $role = $data['role'];
 
-        // Handle Teacher Backup Classes
-        if ($data['role'] === 'TEACHER' && !empty($data['backup_classes'])) {
-            foreach ($data['backup_classes'] as $classId) {
-                // Ensure backup class is not the same as principal class
-                if ($classId != ($data['classe_id'] ?? null)) {
-                    $this->userRepo->assignBackupClass($userId, $classId);
+        // Handle Teacher Classes (Primary and Backup)
+        if ($role === 'TEACHER') {
+            // 1. Store Primary Class in teacher_classe
+            if (!empty($data['classe_id'])) {
+                $this->userRepo->assignBackupClass($userId, $data['classe_id']);
+            }
+
+            // 2. Store Backup Classes in teacher_classe
+            if (!empty($data['backup_classes'])) {
+                foreach ($data['backup_classes'] as $classId) {
+                    // Safety check: don't duplicate primary if already added
+                    if ($classId != ($data['classe_id'] ?? null)) {
+                        $this->userRepo->assignBackupClass($userId, $classId);
+                    }
                 }
             }
         }
 
+        $_SESSION['success'] = "Utilisateur créé avec succès en tant que " . strtolower($role) . ".";
         return ['success' => true];
     }
 
@@ -63,8 +78,8 @@ class AdminService {
         if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) $errors['email'] = 'Email invalide';
         if (empty($data['password']) || strlen($data['password']) < 6) $errors['password'] = 'Mot de passe trop court';
         
-        if ($data['role'] === 'STUDENT' && empty($data['classe_id'])) {
-            $errors['classe_id'] = 'Classe requise pour un étudiant';
+        if (in_array($data['role'], ['STUDENT', 'TEACHER']) && empty($data['classe_id'])) {
+            $errors['classe_id'] = 'Une classe est requise pour ce rôle.';
         }
 
         return $errors;

@@ -23,22 +23,22 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="/teacher/dashboard" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/teacher/dashboard" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/teacher/briefs" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/briefs" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="file-text"></i> <span>Briefs</span>
                 </a>
-                <a href="/teacher/debriefing" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/debriefing" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="check-square"></i> <span>Débriefing</span>
                 </a>
-                <a href="/teacher/progression" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/progression" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="trending-up"></i> <span>Progression</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -63,20 +63,28 @@
                 <!-- Left: Recent Submissions -->
                 <div class="lg:col-span-2 space-y-8">
                     <div class="glass p-8 rounded-[2.5rem]">
-                        <h3 class="text-xl font-bold mb-6">Derniers Livrables Reçus</h3>
+                        <h3 class="text-xl font-bold mb-6">Suivi des Livrables</h3>
+                        @if(empty($submissions))
+                            <p class="text-slate-500 text-sm">Aucun livrable récent.</p>
+                        @endif
                         <div class="space-y-4">
                             @foreach($submissions as $sub)
                             <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer group">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-bold text-indigo-400">{{ substr($sub['name'], 0, 1) }}</div>
+                                    <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-bold text-indigo-400">{{ substr($sub['student_name'], 0, 1) }}</div>
                                     <div>
-                                        <p class="text-sm font-bold">{{ $sub['name'] }}</p>
-                                        <p class="text-xs text-slate-500">{{ $sub['brief'] }} • {{ $sub['type'] }}</p>
+                                        <p class="text-sm font-bold">{{ $sub['student_name'] }}</p>
+                                        <p class="text-xs text-slate-500">{{ $sub['brief_title'] }} • {{ $sub['brief_type'] }}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">{{ $sub['time'] }}</p>
-                                    <button class="text-xs text-indigo-400 font-bold group-hover:underline">Évaluer maintenant</button>
+                                    @if($sub['status'] === 'Non Rendu')
+                                        <p class="text-[10px] text-rose-400 uppercase font-bold mb-1">Non Rendu</p>
+                                        <span class="text-xs text-rose-500 font-bold">Retard</span>
+                                    @else
+                                        <p class="text-[10px] text-emerald-400 uppercase font-bold mb-1">Rendu le {{ date('d/m', strtotime($sub['event_date'])) }}</p>
+                                        <a href="{{ $baseUrl }}/teacher/debriefing" class="text-xs text-indigo-400 font-bold group-hover:underline">Évaluer</a>
+                                    @endif
                                 </div>
                             </div>
                             @endforeach
@@ -87,11 +95,23 @@
                         <h3 class="text-xl font-bold mb-6">Mes Classes Actives</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($classes as $cls)
-                            <div class="p-6 bg-slate-900 border border-white/5 rounded-2xl">
-                                <h4 class="font-bold mb-2">{{ $cls }}</h4>
+                            <div class="p-6 bg-slate-900 border border-white/5 rounded-2xl relative overflow-hidden group">
+                                @if($cls['is_primary'])
+                                    <div class="absolute top-0 right-0 px-3 py-1 bg-indigo-500/20 text-indigo-400 text-[10px] font-bold rounded-bl-xl border-l border-b border-indigo-500/20">
+                                        Principal
+                                    </div>
+                                @else
+                                    <div class="absolute top-0 right-0 px-3 py-1 bg-slate-800 text-slate-500 text-[10px] font-bold rounded-bl-xl">
+                                        Renfort
+                                    </div>
+                                @endif
+                                <h4 class="font-bold mb-2">{{ $cls['name'] }}</h4>
                                 <div class="flex justify-between items-center text-xs text-slate-500">
-                                    <span>24 Apprenants</span>
-                                    <span class="text-emerald-400 font-bold">88% Progression</span>
+                                    <span>{{ $cls['student_count'] }} Apprenants</span>
+                                    <span class="text-indigo-400 font-bold">{{ $cls['sprint_count'] }} Sprints</span>
+                                </div>
+                                <div class="flex justify-between items-center text-[10px] text-slate-600 mt-1 uppercase font-bold">
+                                    <span>Promotion {{ $cls['year'] }}</span>
                                 </div>
                                 <div class="w-full h-1 bg-slate-800 rounded-full mt-3 overflow-hidden">
                                     <div class="w-[88%] h-full bg-emerald-500"></div>
@@ -106,18 +126,34 @@
                 <div class="space-y-8">
                     <div class="glass p-8 rounded-[2.5rem]">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-xl font-bold">Briefs en cours</h3>
-                            <button class="p-2 hover:bg-white/10 rounded-lg"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                            <h3 class="text-xl font-bold">Briefs</h3>
+                            <a href="{{ $baseUrl }}/teacher/briefs/create" class="p-2 hover:bg-white/10 rounded-lg"><i data-lucide="plus" class="w-5 h-5"></i></a>
                         </div>
                         <div class="space-y-4">
+                            @if(empty($active_briefs))
+                                <p class="text-slate-500 text-sm">Aucun brief créé.</p>
+                            @endif
                             @foreach($active_briefs as $br)
+                            @php 
+                                $isOverdue = strtotime($br['end_date']) < time(); 
+                                $percent = $br['total_students'] > 0 ? round(($br['submission_count'] / $br['total_students']) * 100) : 0;
+                            @endphp
                             <div class="p-4 bg-indigo-500/5 border border-indigo-500/10 rounded-2xl relative overflow-hidden group">
-                                <div class="absolute top-0 right-0 p-2"><span class="w-2 h-2 rounded-full bg-emerald-500 block"></span></div>
-                                <h4 class="text-sm font-bold text-indigo-300">{{ $br }}</h4>
-                                <p class="text-[10px] text-slate-500 mt-1">Fin dans 3 jours</p>
+                                <div class="absolute top-0 right-0 p-2">
+                                    @if($isOverdue)
+                                        <span class="w-2 h-2 rounded-full bg-rose-500 block" title="Terminé"></span>
+                                    @else
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500 block" title="En cours"></span>
+                                    @endif
+                                </div>
+                                <h4 class="text-sm font-bold text-indigo-300">{{ $br['title'] }}</h4>
+                                <p class="text-[10px] text-slate-500 mt-1">{{ $isOverdue ? 'Terminé le ' . date('d/m', strtotime($br['end_date'])) : 'Fin le ' . date('d/m', strtotime($br['end_date'])) }}</p>
                                 <div class="mt-4 flex justify-between items-center">
-                                    <span class="text-[10px] font-bold text-slate-400">18/24 Rendus</span>
-                                    <button class="text-[10px] font-bold text-white bg-indigo-500 px-2 py-1 rounded">Détails</button>
+                                    <span class="text-[10px] font-bold text-slate-400">{{ $br['submission_count'] }}/{{ $br['total_students'] }} Rendus</span>
+                                    <a href="{{ $baseUrl }}/teacher/brief?id={{ $br['id'] }}" class="text-[10px] font-bold text-white bg-indigo-500 px-2 py-1 rounded">Détails</a>
+                                </div>
+                                <div class="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
+                                    <div class="h-full bg-indigo-500" style="width: {{ $percent }}%"></div>
                                 </div>
                             </div>
                             @endforeach

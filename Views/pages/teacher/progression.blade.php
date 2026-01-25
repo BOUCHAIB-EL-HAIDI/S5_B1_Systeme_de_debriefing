@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi des Classes - Debrief.me</title>
+    <title>Suivi Progression - Debrief.me</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -23,22 +23,22 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="/teacher/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/teacher/briefs" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/briefs" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="file-text"></i> <span>Briefs</span>
                 </a>
-                <a href="/teacher/debriefing" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/debriefing" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="check-square"></i> <span>Débriefing</span>
                 </a>
-                <a href="/teacher/progression" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/teacher/progression" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="trending-up"></i> <span>Progression</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -49,46 +49,30 @@
             <header class="flex justify-between items-center mb-10">
                 <div>
                     <h1 class="text-3xl font-extrabold">Suivi de Progression</h1>
-                    <p class="text-slate-400 mt-1">Analysez l'évolution des compétences de vos classes</p>
-                </div>
-                <div class="flex gap-4">
-                    <select class="glass px-4 py-2 rounded-xl text-sm outline-none border border-white/10">
-                        <option>Classe: WEB-2024-A</option>
-                        <option>Classe: WEB-2024-B</option>
-                    </select>
+                    <p class="text-slate-400 mt-1">Historique des débriefings par apprenant</p>
                 </div>
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
-                @foreach($stats as $stat)
-                <div class="glass p-6 rounded-3xl border-l-4 border-{{ $stat['color'] }}-500">
-                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">{{ $stat['label'] }}</p>
-                    <h2 class="text-3xl font-extrabold text-white">{{ $stat['value'] }}</h2>
+            <div class="glass p-8 rounded-3xl mb-8">
+                <div class="max-w-md">
+                    <label class="text-xs text-slate-400 mb-2 block uppercase tracking-widest font-bold">Sélectionner un apprenant</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <select id="studentSelect" class="w-full bg-slate-900/50 border border-white/10 rounded-xl pl-12 pr-4 py-3 outline-none focus:border-indigo-500 transition-all text-slate-300">
+                            <option value="">Choisir un étudiant...</option>
+                            @foreach($students as $student)
+                                <option value="{{ $student['id'] }}">{{ $student['first_name'] }} {{ $student['last_name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                @endforeach
             </div>
 
-            <div class="glass rounded-[2.5rem] p-8">
-                <h3 class="text-xl font-bold mb-8">Performance par Apprenant</h3>
-                <div class="space-y-6">
-                    @foreach($students as $std)
-                    <div class="flex items-center gap-6">
-                        <div class="w-1/4">
-                            <p class="text-sm font-bold">{{ $std }}</p>
-                            <p class="text-[10px] text-slate-500 uppercase">Dernier Brief: PixelQuest</p>
-                        </div>
-                        <div class="flex-1 flex gap-2">
-                            @for($i=0; $i<10; $i++)
-                            <div class="h-8 flex-1 rounded-md {{ $i < 7 ? 'bg-emerald-500/40 border border-emerald-500/20' : ($i < 8 ? 'bg-indigo-500/40 border border-indigo-500/20' : 'bg-slate-800') }} relative group">
-                                <div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 border border-white/10 px-2 py-1 rounded text-[8px] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">C{{$i+1}}: Validé L{{rand(1,3)}}</div>
-                            </div>
-                            @endfor
-                        </div>
-                        <div class="w-16 text-right">
-                            <span class="text-xs font-bold text-slate-300">70%</span>
-                        </div>
-                    </div>
-                    @endforeach
+            <div id="historyContainer" class="space-y-6">
+                <!-- History items will be loaded here -->
+                <div class="text-center py-20 text-slate-500 italic">
+                    <i data-lucide="history" class="w-12 h-12 mb-4 mx-auto opacity-20"></i>
+                    <p>Sélectionnez un étudiant pour voir son historique.</p>
                 </div>
             </div>
         </main>
@@ -96,6 +80,84 @@
 
     <script>
         lucide.createIcons();
+        const baseUrl = "{{ $baseUrl }}";
+        const studentSelect = document.getElementById('studentSelect');
+        const historyContainer = document.getElementById('historyContainer');
+
+        studentSelect.addEventListener('change', function() {
+            const studentId = this.value;
+            
+            if (!studentId) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-20 text-slate-500 italic">
+                        <i data-lucide="history" class="w-12 h-12 mb-4 mx-auto opacity-20"></i>
+                        <p>Sélectionnez un étudiant pour voir son historique.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            historyContainer.innerHTML = '<p class="text-center text-slate-400">Chargement de l\'historique...</p>';
+
+            fetch(`${baseUrl}/teacher/student/history?student_id=${studentId}`)
+                .then(res => res.json())
+                .then(data => {
+                    renderHistory(data);
+                });
+        });
+
+        function renderHistory(history) {
+            if (history.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="text-center py-20 text-slate-500 italic">
+                        <i data-lucide="inbox" class="w-12 h-12 mb-4 mx-auto opacity-20"></i>
+                        <p>Aucun débriefing enregistré pour cet étudiant.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            historyContainer.innerHTML = history.map(item => `
+                <div class="glass p-8 rounded-3xl border-l-4 border-indigo-500 transition-all hover:bg-white/5">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mb-1 block">Brief</span>
+                            <h3 class="text-xl font-bold text-white mb-1">${item.brief_title}</h3>
+                            <p class="text-xs text-slate-500">Débriefé le ${new Date(item.date).toLocaleDateString()}</p>
+                        </div>
+                        <div class="bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+                            <span class="text-xs text-indigo-300 font-bold">Par ${item.teacher_name}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 bg-slate-900/50 p-4 rounded-xl border border-white/5">
+                        <p class="text-sm text-slate-300 italic">"${item.comment}"</p>
+                    </div>
+
+                    <div>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-3 block">Compétences Évaluées</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            ${item.competences.map(comp => `
+                                <div class="flex items-center justify-between p-3 rounded-xl border ${comp.status === 'VALIDEE' ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-rose-500/5 border-rose-500/20'}">
+                                    <div class="flex items-center gap-3">
+                                        <div class="font-bold text-xs ${comp.status === 'VALIDEE' ? 'text-emerald-400' : 'text-rose-400'}">${comp.code}</div>
+                                        <div class="text-xs text-slate-300 line-clamp-1" title="${comp.label}">${comp.label}</div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="text-[10px] font-bold ${comp.status === 'VALIDEE' ? 'text-emerald-400' : 'text-rose-400'} uppercase">${comp.status}</span>
+                                        <span class="text-[9px] text-slate-500 uppercase">${comp.niveau}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>

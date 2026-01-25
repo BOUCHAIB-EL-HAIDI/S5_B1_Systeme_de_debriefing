@@ -60,6 +60,23 @@
                 </a>
             </header>
 
+            @if(!empty($success))
+                <div id="successAlert" class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-sm flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    {{ $success }}
+                </div>
+                <script>
+                    setTimeout(() => {
+                        const alert = document.getElementById('successAlert');
+                        if (alert) {
+                            alert.style.transition = 'opacity 0.5s ease';
+                            alert.style.opacity = '0';
+                            setTimeout(() => alert.remove(), 500);
+                        }
+                    }, 3000);
+                </script>
+            @endif
+
             <!-- Filters -->
             <div class="glass p-6 rounded-3xl mb-8 flex flex-wrap gap-4 items-center">
                 <div class="flex-1 min-w-[200px] relative">

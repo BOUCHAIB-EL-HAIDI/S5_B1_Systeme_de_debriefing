@@ -23,19 +23,19 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="/student/dashboard" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/student/dashboard" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/student/briefs" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400 hover:text-white">
+                <a href="{{ $baseUrl }}/student/briefs" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400 hover:text-white">
                     <i data-lucide="file-text"></i> <span>Mes Briefs</span>
                 </a>
-                <a href="/student/progression" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400 hover:text-white">
+                <a href="{{ $baseUrl }}/student/progression" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400 hover:text-white">
                     <i data-lucide="award"></i> <span>Mon Parcours</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -45,7 +45,7 @@
         <main class="flex-1 ml-64 p-8">
             <header class="flex justify-between items-center mb-10">
                 <div>
-                    <h1 class="text-3xl font-extrabold">Bonjour, Saad ! 👋</h1>
+                    <h1 class="text-3xl font-extrabold">Bonjour, {{ $auth['first_name'] }} ! 👋</h1>
                     <p class="text-slate-400 mt-1">Bon retour sur votre espace de débriefing</p>
                 </div>
                 <!-- Notifications/Profile -->
@@ -56,76 +56,78 @@
                     </button>
                     <div class="glass px-4 py-2 rounded-2xl flex items-center gap-3">
                         <div class="text-right">
-                            <p class="text-sm font-bold">Saad El Haidi</p>
-                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">Student • WEB-2024-A</p>
+                            <p class="text-sm font-bold">{{ $auth['first_name'] }} {{ $auth['last_name'] }}</p>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-wider">{{ $auth['role'] }}</p>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center font-bold">S</div>
+                        <div class="w-10 h-10 rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center font-bold">
+                            {{ substr($auth['first_name'], 0, 1) }}
+                        </div>
                     </div>
                 </div>
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Left: Current Brief & Tasks -->
+                <!-- Left: Current Brief & Tasks -->
                 <div class="lg:col-span-2 space-y-8">
                     <!-- Featured Card -->
+                    @if(!empty($active_brief))
                     <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 rounded-[2.5rem] relative overflow-hidden shadow-2xl shadow-indigo-500/20">
                         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
                         <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end">
                             <div>
-                                <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 inline-block">Brief Actuel</span>
-                                <h2 class="text-4xl font-black mb-2">PixelQuest</h2>
-                                <p class="text-indigo-100/70 text-sm max-w-sm mb-6">Intégration d'une interface de jeu vidéo vintage en HTML/CSS pur. Date limite: Vendredi 18h.</p>
-                                <a href="/student/briefs" class="bg-white text-indigo-600 px-6 py-3 rounded-2xl font-bold inline-flex items-center gap-2 hover:scale-105 transition-transform shadow-lg">
+                                <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 inline-block">Dernier Brief Assigné</span>
+                                <h2 class="text-4xl font-black mb-2">{{ $active_brief['title'] }}</h2>
+                                <p class="text-indigo-100/70 text-sm max-w-sm mb-6">{{ substr($active_brief['content'], 0, 100) }}...</p>
+                                <a href="{{ $baseUrl }}/student/briefs" class="bg-white text-indigo-600 px-6 py-3 rounded-2xl font-bold inline-flex items-center gap-2 hover:scale-105 transition-transform shadow-lg">
                                     <i data-lucide="arrow-right-circle" class="w-5 h-5"></i>
                                     Accéder au Brief
                                 </a>
                             </div>
                             <div class="mt-8 md:mt-0 text-right">
-                                <p class="text-6xl font-black opacity-30">72%</p>
-                                <p class="text-xs uppercase font-bold text-indigo-200">Rendu complété</p>
+                                <p class="text-xs uppercase font-bold text-indigo-200">Date limite</p>
+                                <p class="text-2xl font-black leading-none mt-1">{{ date('d M', strtotime($active_brief['end_date'])) }}</p>
                             </div>
                         </div>
                     </div>
+                    @else
+                    <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center">
+                        <i data-lucide="inbox" class="w-12 h-12 text-slate-600 mb-4"></i>
+                        <p class="text-slate-400">Aucun brief assigné pour le moment.</p>
+                    </div>
+                    @endif
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass p-8 rounded-[2rem]">
-                            <h3 class="text-lg font-bold mb-4">Prochaines Étapes</h3>
-                            <div class="space-y-4">
-                                @foreach($tasks as $task)
-                                <label class="flex items-center gap-3 p-3 bg-slate-900/50 rounded-xl border border-white/5 cursor-pointer hover:border-indigo-500/30 transition-all">
-                                    <input type="checkbox" class="w-5 h-5 rounded-lg border-white/10 bg-slate-800 text-indigo-500 focus:ring-0">
-                                    <span class="text-sm font-medium">{{ $task }}</span>
-                                </label>
+                    <!-- Previous Briefs / History Section -->
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <h3 class="text-xl font-bold mb-6">Autres Briefs Assignés</h3>
+                        @if(empty($history_briefs))
+                            <div class="text-center py-10 text-slate-500 text-sm">
+                                <p>Aucun autre brief trouvé.</p>
+                            </div>
+                        @else
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @foreach($history_briefs as $brief)
+                                <div class="p-4 bg-slate-900/50 border border-white/5 rounded-2xl flex flex-col justify-between group hover:border-indigo-500/30 transition-all">
+                                    <div>
+                                        <div class="flex justify-between items-start mb-2">
+                                            <span class="text-[10px] uppercase font-bold text-slate-500">{{ $brief['sprint_name'] }}</span>
+                                            @if($brief['status'] === 'Soumis')
+                                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            @else
+                                                <span class="w-2 h-2 rounded-full bg-slate-600"></span>
+                                            @endif
+                                        </div>
+                                        <h4 class="font-bold text-white mb-1">{{ $brief['title'] }}</h4>
+                                        <p class="text-xs text-slate-400 line-clamp-2">{{ substr($brief['content'], 0, 50) }}...</p>
+                                    </div>
+                                    <div class="mt-4 pt-4 border-t border-white/5 flex justify-between items-center">
+                                        <span class="text-[10px] text-slate-500">Fin le {{ date('d/m', strtotime($brief['end_date'])) }}</span>
+                                        <a href="{{ $baseUrl }}/student/briefs" class="text-xs text-indigo-400 font-bold group-hover:underline">Voir</a>
+                                    </div>
+                                </div>
                                 @endforeach
                             </div>
-                        </div>
-
-                        <div class="glass p-8 rounded-[2rem]">
-                            <div class="flex justify-between items-center mb-6">
-                                <h3 class="text-lg font-bold">Ma Progression</h3>
-                                <a href="/student/progression" class="text-xs text-indigo-400 font-bold hover:underline">Détails</a>
-                            </div>
-                            <div class="space-y-4 text-sm">
-                                <div>
-                                    <div class="flex justify-between mb-2">
-                                        <span class="text-slate-400">Front-end</span>
-                                        <span class="font-bold">L2</span>
-                                    </div>
-                                    <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                        <div class="w-[66%] h-full bg-indigo-500"></div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between mb-2">
-                                        <span class="text-slate-400">Collaboration</span>
-                                        <span class="font-bold">L1</span>
-                                    </div>
-                                    <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                        <div class="w-[33%] h-full bg-emerald-500"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
 

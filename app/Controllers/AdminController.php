@@ -40,20 +40,32 @@ class AdminController extends Controller
 
     public function users()
     {
+        $success = $_SESSION['success'] ?? null;
+        unset($_SESSION['success']);
+        
         $users = $this->adminService->getUsersList();
         $this->render('pages.admin.users', [
-            'users' => $users
+            'users' => $users,
+            'success' => $success
         ]); 
     }
 
-    public function classes()
+      public function classes()
     {
-        $repo = new \App\Repositories\ClassRepo();
-        $classes = $repo->getAllClassesWithStats();
-        $this->render('pages.admin.classes', [
-            'classes' => $classes
-        ]);
+       
+    
+    $success = $_SESSION['success'] ?? null;
+    unset($_SESSION['success']);
+
+    $repo = new \App\Repositories\ClassRepo();
+    $classes = $repo->getAllClassesWithStats();
+
+    $this->render('pages.admin.classes', [
+        'classes' => $classes,
+        'success' => $success
+    ]);
     }
+
 
     public function competences()
     {
@@ -96,6 +108,7 @@ class AdminController extends Controller
             $this->render('pages.admin.createuser', [
                 'errors' => $result['errors'],
                 'classes' => $repo->getAllClasses(),
+                'available_classes' => $repo->getAvailableClassesForPrincipal(),
                 'old' => $_POST
             ]);
         }

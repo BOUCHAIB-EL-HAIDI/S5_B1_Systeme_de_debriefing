@@ -14,27 +14,114 @@ class StudentController extends Controller
     }
     public function dashboard()
     {
+        $studentId = $_SESSION['user_id'];
+        $repo = new \App\Repositories\StudentRepo();
+        
+        $allBriefs = $repo->getAssignedBriefs($studentId);
+        
+        $activeBrief = null;
+        $historyBriefs = [];
+
+        // Logic to pick the "active" brief (e.g. first one not overdue or just the first one)
+        // Since getAssignedBriefs orders by date, we can pop the first one as active
+        if (!empty($allBriefs)) {
+            $activeBrief = $allBriefs[0];
+            $historyBriefs = array_slice($allBriefs, 1);
+        }
+
+        // Get recent activity (evaluations)
+        $recentDebriefs = $repo->getRecentDebriefings($studentId, 3);
+        $activities = [];
+        foreach ($recentDebriefs as $deb) {
+            $activities[] = [
+                'time' => date('H:i', strtotime($deb['date'])),
+                'text' => 'Retour sur ' . $deb['brief_title'],
+                'sub' => '"' . substr($deb['comment'], 0, 50) . '..."'
+            ];
+        }
+
+        if (empty($activities)) {
+            $activities[] = ['time' => '', 'text' => 'Aucune activité récente', 'sub' => 'Commencez un brief !'];
+        }
+
         $this->render('pages.student.dashboard', [
-            'tasks' => ['Finaliser le responsive', 'Pousser sur GitHub', 'Rédiger le README'],
-            'activities' => [
-                ['time' => '10:30', 'text' => 'Ahmed I. a validé votre débriefing', 'sub' => 'Félicitations ! Vous avez atteint le niveau 2.'],
-                ['time' => '16:45', 'text' => 'Nouveau Brief assigné', 'sub' => 'Le brief "DOM Gamification" est disponible.']
-            ]
+            'active_brief' => $activeBrief,
+            'history_briefs' => $historyBriefs,
+            'activities' => $activities
         ]);
     }
       
     public function briefs()
     {
+        $studentId = $_SESSION['user_id'];
+        $repo = new \App\Repositories\StudentRepo();
+        $briefs = $repo->getAssignedBriefs($studentId);
+
         $this->render('pages.student.briefs', [
-            'brief_titles' => ['PixelQuest', 'DOM Gamification', 'Spotify Clone', 'Portfolio 2024']
+            'briefs' => $briefs
         ]);
     }
 
+    public function briefDetails()
+    {
+        $briefId = $_GET['id'] ?? null;
+        if (!$briefId) {
+            header('Location: ' . BASE_URL . '/student/briefs');
+            exit;
+        }
+
+        $studentId = $_SESSION['user_id'];
+        $repo = new \App\Repositories\StudentRepo();
+        $brief = $repo->getBriefDetails((int)$briefId, $studentId);
+
+        if (!$brief) {
+            header('Location: ' . BASE_URL . '/student/briefs');
+            exit;
+        }
+
+        $this->render('pages.student.brief_details', [
+            'brief' => $brief
+        ]);
+    }
+
+    public function submit()
+    {
+        $studentId = $_SESSION['user_id'];
+        $briefId = $_POST['brief_id'] ?? null;
+        $url = $_POST['livrable_url'] ?? '';
+
+        if (!$briefId || empty($url)) {
+            $_SESSION['error'] = "Veuillez fournir un lien valide.";
+            header('Location: ' . BASE_URL . '/student/briefs');
+            exit;
+        }
+
+        $repo = new \App\Repositories\StudentRepo();
+        $success = $repo->submitLivrable($studentId, (int)$briefId, $url);
+
+        if ($success) {
+            $_SESSION['success'] = "Travail rendu avec succès !";
+        } else {
+            $_SESSION['error'] = "Impossible de rendre le travail (Brief expiré ou erreur serveur).";
+        }
+        
+        header('Location: ' . BASE_URL . '/student/briefs');
+        exit;
+    }
+
+
     public function progression()
     {
+        $studentId = $_SESSION['user_id'];
+        $repo = new \App\Repositories\StudentRepo();
+        $progression = $repo->getCompetenceProgression($studentId);
+        $recent = $repo->getRecentDebriefings($studentId);
+        $pending = $repo->getPendingEvaluations($studentId);
+
         $this->render('pages.student.progression', [
-            'user_name' => 'Saad El Haidi',
-            'skills' => ['Planifier le travail', 'Intégrer une maquette', 'Développer un backend', 'Gérer les bases de données', 'Déployer une application', 'Collaborer via Git']
+            'progression' => $progression,
+            'recent' => $recent,
+            'pending' => $pending
         ]);
     }
 }

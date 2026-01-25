@@ -29,11 +29,20 @@ $router->post('/admin/classes/create', "AddClassController@addClass");
 $router->get('/teacher/dashboard', "TeacherController@dashboard");
 $router->get('/teacher/debriefing', "TeacherController@debriefing");
 $router->get('/teacher/briefs', "TeacherController@briefs");
+$router->get('/teacher/brief', "TeacherController@briefDetails");
+$router->get('/teacher/briefs/create', "TeacherController@createBrief");
+$router->post('/teacher/briefs/store', "TeacherController@storeBrief");
+$router->get('/teacher/brief/competences', "TeacherController@getBriefCompetences");
+$router->get('/teacher/student/livrable', "TeacherController@getStudentLivrableStatus");
+$router->get('/teacher/student/history', "TeacherController@getStudentHistory");
+$router->post('/teacher/debriefing/store', "TeacherController@storeDebriefing");
 $router->get('/teacher/progression', "TeacherController@progression");
 
 // Student Routes
 $router->get('/student/dashboard', "StudentController@dashboard");
 $router->get('/student/briefs', "StudentController@briefs");
+$router->get('/student/brief', "StudentController@briefDetails");
+$router->post('/student/briefs/submit', "StudentController@submit");
 $router->get('/student/progression', "StudentController@progression");
 
 // Home fallback

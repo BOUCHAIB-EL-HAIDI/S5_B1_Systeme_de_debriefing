@@ -42,7 +42,7 @@ class AuthController extends Controller
                 : null;
 
         
-        header('Location: /' . strtolower($user->getRole()) . '/dashboard' );
+        header('Location: ' . BASE_URL . '/' . strtolower($user->getRole()) . '/dashboard' );
         exit;
 
      }catch(\Exception $e ){
@@ -50,15 +50,19 @@ class AuthController extends Controller
         $_SESSION['old'] = [
         'email' => $email
          ]; 
-        header('Location: /login');
+        header('Location: ' . BASE_URL . '/login');
         exit;
      }
     }
 
     public function logout()
     {
+          if (session_status() === PHP_SESSION_NONE) {
+              session_start();
+          }
           $_SESSION = [];
           session_destroy();
-          header('Location: /login');
+          header('Location: ' . BASE_URL . '/login');
+          exit;
     }
 }

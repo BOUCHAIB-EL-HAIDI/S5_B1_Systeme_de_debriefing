@@ -23,22 +23,22 @@
             </div>
             
             <nav class="space-y-2 flex-1">
-                <a href="/teacher/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
                 </a>
-                <a href="/teacher/briefs" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/teacher/briefs" class="flex items-center gap-3 p-3 rounded-xl text-white bg-indigo-500 shadow-lg shadow-indigo-500/20">
                     <i data-lucide="file-text"></i> <span>Briefs</span>
                 </a>
-                <a href="/teacher/debriefing" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/debriefing" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="check-square"></i> <span>Débriefing</span>
                 </a>
-                <a href="/teacher/progression" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
+                <a href="{{ $baseUrl }}/teacher/progression" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-slate-400">
                     <i data-lucide="trending-up"></i> <span>Progression</span>
                 </a>
             </nav>
 
             <div class="pt-6 border-t border-white/10">
-                <a href="/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
+                <a href="{{ $baseUrl }}/logout" class="flex items-center gap-3 p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition-all">
                     <i data-lucide="log-out"></i> <span>Déconnexion</span>
                 </a>
             </div>
@@ -51,11 +51,19 @@
                     <h1 class="text-3xl font-extrabold">Gestion des Briefs</h1>
                     <p class="text-slate-400 mt-1">Créez des projets et assignez des compétences</p>
                 </div>
-                <button class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
+                <a href="{{ $baseUrl }}/teacher/briefs/create" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                     Nouveau Brief
-                </button>
+                </a>
             </header>
+
+            @if(!empty($_SESSION['success']))
+                <div class="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-2xl text-sm flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    {{ $_SESSION['success'] }}
+                    @php unset($_SESSION['success']) @endphp
+                </div>
+            @endif
 
             <!-- Briefs Table -->
             <div class="glass rounded-3xl overflow-hidden">
@@ -63,39 +71,47 @@
                     <thead class="bg-white/5 border-b border-white/10">
                         <tr>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Titre du Brief</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Type</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Classe / Sprint</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Compétences</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">Statut</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">
-                        @foreach($briefs as $brief)
+                        @forelse($briefs as $brief)
                         <tr class="hover:bg-white/5 transition-colors group">
-                            <td class="px-6 py-4 font-bold text-sm">{{ $brief['title'] }}</td>
-                            <td class="px-6 py-4 text-xs">
-                                <span class="bg-slate-800 px-2 py-1 rounded text-slate-400">{{ $brief['type'] }}</span>
+                            <td class="px-6 py-4">
+                                <p class="font-bold text-sm">{{ $brief['title'] }}</p>
+                                <span class="bg-slate-800 px-2 py-0.5 rounded text-[10px] text-slate-500 uppercase">{{ $brief['type'] }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <p class="text-xs font-medium">{{ $brief['class_name'] }}</p>
+                                <p class="text-[10px] text-slate-500">{{ $brief['sprint_name'] }}</p>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-1 flex-wrap">
-                                    @foreach($brief['comps'] as $c)
-                                    <span class="text-[9px] bg-indigo-500/10 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-500/20">{{ $c }}</span>
-                                    @endforeach
+                                    @if(!empty($brief['competence_codes']))
+                                        @foreach(explode(',', $brief['competence_codes']) as $c)
+                                        <span class="text-[9px] bg-indigo-500/10 text-indigo-400 px-1.5 py-0.5 rounded border border-indigo-500/20">{{ trim($c) }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="text-[10px] text-slate-600 italic">Aucune</span>
+                                    @endif
                                 </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 rounded-md text-[10px] font-bold uppercase {{ $brief['status'] === 'Assigné' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-500/10 text-slate-400' }}">
-                                    {{ $brief['status'] }}
-                                </span>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button class="p-2 hover:bg-white/10 rounded-lg"><i data-lucide="eye" class="w-4 h-4 text-slate-400"></i></button>
+                                    <a href="{{ $baseUrl }}/teacher/brief?id={{ $brief['id'] }}" class="p-2 hover:bg-white/10 rounded-lg" title="Voir les détails"><i data-lucide="eye" class="w-4 h-4 text-slate-400"></i></a>
                                     <button class="p-2 hover:bg-indigo-500/20 text-indigo-400 rounded-lg transition-colors"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-10 text-center text-slate-500 italic text-sm">
+                                Aucun brief créé pour le moment.
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

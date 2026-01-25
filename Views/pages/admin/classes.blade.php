@@ -54,19 +54,13 @@
                     <h1 class="text-3xl font-extrabold">Gestion des Classes</h1>
                     <p class="text-slate-400 mt-1">Gérez les promotions et affectez les formateurs</p>
                 </div>
-                <button id="openModal" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                    Créer une Classe
-                </button>
-                    @if(!empty($_SESSION['success']))
+                @if(!empty($success))
                     <div id="successAlert" class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-3 rounded-xl text-sm flex items-center gap-2 animate-pulse">
                         <i data-lucide="check-circle" class="w-4 h-4"></i>
-                        {{ $_SESSION['success'] }}
+                        {{ $success }}
                     </div>
 
-                    @php
-                     unset($_SESSION['success'])
-                    @endphp
+                
 
                     <script>
                         setTimeout(() => {
@@ -79,6 +73,11 @@
                         }, 3000);
                     </script>
                     @endif
+                <button id="openModal" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    Créer une Classe
+                </button>
+                    
 
                 
             </header>

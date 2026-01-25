@@ -184,6 +184,7 @@
                     teacherSelect.disabled = false;
                     studentSelect.classList.add('hidden');
                     studentSelect.disabled = true;
+                    updateBackupOptions(); // Ensure options are correct on load/change
                 } else {
                     backupField.classList.add('hidden');
                     studentSelect.classList.remove('hidden');
@@ -197,7 +198,25 @@
             }
         }
 
+        function updateBackupOptions() {
+            const selectedPrimaryId = teacherSelect.value;
+            const backupSelect = document.querySelector('select[name="backup_classes[]"]');
+            const options = backupSelect.options;
+
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value === selectedPrimaryId) {
+                    options[i].disabled = true;
+                    options[i].selected = false; // Deselect if it was selected
+                    options[i].style.display = 'none';
+                } else {
+                    options[i].disabled = false;
+                    options[i].style.display = 'block';
+                }
+            }
+        }
+
         roleSelect.addEventListener('change', updateFields);
+        teacherSelect.addEventListener('change', updateBackupOptions);
         window.addEventListener('load', updateFields);
     </script>
 </body>
