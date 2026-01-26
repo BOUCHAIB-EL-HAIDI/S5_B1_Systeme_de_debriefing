@@ -83,7 +83,15 @@
                                         <span class="text-xs text-rose-500 font-bold">Retard</span>
                                     @else
                                         <p class="text-[10px] text-emerald-400 uppercase font-bold mb-1">Rendu le {{ date('d/m', strtotime($sub['event_date'])) }}</p>
-                                        <a href="{{ $baseUrl }}/teacher/debriefing" class="text-xs text-indigo-400 font-bold group-hover:underline">Évaluer</a>
+                                        <div class="flex items-center gap-3 justify-end">
+                                            @if(!empty($sub['livrable_link']))
+                                                <a href="{{ $sub['livrable_link'] }}" target="_blank" class="text-xs text-slate-400 hover:text-white transition-all flex items-center gap-1">
+                                                     <i data-lucide="external-link" class="w-3 h-3"></i>
+                                                     Lien
+                                                </a>
+                                            @endif
+                                            <a href="{{ $baseUrl }}/teacher/debriefing" class="text-xs text-indigo-400 font-bold group-hover:underline">Évaluer</a>
+                                        </div>
                                     @endif
                                 </div>
                             </div>

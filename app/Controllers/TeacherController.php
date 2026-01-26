@@ -85,13 +85,14 @@ class TeacherController extends Controller
         }
 
         $repo = new \App\Repositories\DebriefingRepo();
-        $submittedAt = $repo->getLivrableStatus((int)$studentId, (int)$briefId);
+        $livrable = $repo->getLivrableStatus((int)$studentId, (int)$briefId);
         $isDebriefed = $repo->checkDebriefingExists((int)$studentId, (int)$briefId);
         
         header('Content-Type: application/json');
         echo json_encode([
-            'status' => $submittedAt ? 'Soumis ✓' : 'Non soumis',
-            'is_debriefed' => $isDebriefed
+            'status' => $livrable ? 'Soumis ✓' : 'Non soumis',
+            'is_debriefed' => $isDebriefed,
+            'content' => $livrable['content'] ?? null
         ]);
         exit;
     }
@@ -113,8 +114,8 @@ class TeacherController extends Controller
         $repo = new \App\Repositories\DebriefingRepo();
 
         // Enforce: Cannot debrief if no delivered work
-        $submittedAt = $repo->getLivrableStatus((int)$studentId, (int)$briefId);
-        if (!$submittedAt) {
+        $livrable = $repo->getLivrableStatus((int)$studentId, (int)$briefId);
+        if (!$livrable) {
             $_SESSION['error'] = "Impossible de débriefing : L'étudiant n'a pas rendu son travail.";
             header('Location: ' . BASE_URL . '/teacher/debriefing');
             exit;

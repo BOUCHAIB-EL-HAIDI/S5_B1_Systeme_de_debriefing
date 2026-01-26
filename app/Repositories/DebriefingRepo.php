@@ -45,11 +45,11 @@ class DebriefingRepo {
         ]);
     }
 
-    public function getLivrableStatus(int $studentId, int $briefId): ?string {
-        $sql = "SELECT submitted_at FROM livrable WHERE student_id = :student_id AND brief_id = :brief_id";
+    public function getLivrableStatus(int $studentId, int $briefId): ?array {
+        $sql = "SELECT submitted_at, content FROM livrable WHERE student_id = :student_id AND brief_id = :brief_id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':student_id' => $studentId, ':brief_id' => $briefId]);
-        return $stmt->fetchColumn() ?: null;
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     public function checkDebriefingExists(int $studentId, int $briefId): bool {

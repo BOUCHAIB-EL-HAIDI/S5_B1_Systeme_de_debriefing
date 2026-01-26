@@ -161,7 +161,8 @@ class BriefRepo {
                 b.title as brief_title,
                 l.submitted_at as event_date,
                 'Soumis' as status,
-                b.type as brief_type
+                b.type as brief_type,
+                l.content as livrable_link
             FROM livrable l
             JOIN brief b ON l.brief_id = b.id
             JOIN users u ON l.student_id = u.id
@@ -175,7 +176,8 @@ class BriefRepo {
                 b.title as brief_title,
                 b.end_date as event_date,
                 'Non Rendu' as status,
-                b.type as brief_type
+                b.type as brief_type,
+                NULL as livrable_link
             FROM brief b
             JOIN sprint s ON b.sprint_id = s.id
             JOIN users u ON u.classe_id = s.classe_id AND u.role = 'STUDENT'

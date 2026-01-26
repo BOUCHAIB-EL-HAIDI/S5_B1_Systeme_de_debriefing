@@ -173,14 +173,19 @@
  .then(res => res.json())
  .then(data => {
  if (data.status === 'Soumis ✓') {
+ let linkHtml = '';
+ if (data.content) {
+ linkHtml = ` <a href="${data.content}" target="_blank" class="underline ml-2 text-[10px] normal-case">Voir le travail</a>`;
+ }
+ 
  if (data.is_debriefed) {
- livrableStatusEl.innerText = "Déjà évalué";
+ livrableStatusEl.innerHTML = "Déjà évalué" + linkHtml;
  livrableStatusEl.className = "px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold uppercase";
  submitBtn.disabled = true;
  submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
  submitBtn.title = "Ce brief a déjà été débriefé.";
  } else {
- livrableStatusEl.innerText = data.status;
+ livrableStatusEl.innerHTML = data.status + linkHtml;
  livrableStatusEl.className = "px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase";
  submitBtn.disabled = false;
  submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
